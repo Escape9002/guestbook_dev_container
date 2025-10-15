@@ -15,8 +15,8 @@
  */
 package guestbook;
 
-import io.github.wimdeblauwe.htmx.spring.boot.mvc.HtmxResponse;
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest;
+import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxTrigger;
 import jakarta.validation.Valid;
 
 import java.util.Optional;
@@ -33,6 +33,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.FragmentsRendering;
 
 /**
  * A controller to handle web requests to manage {@link GuestbookEntry}s
@@ -140,19 +142,16 @@ class GuestbookController {
 	 * @param form the form submitted by the user
 	 * @param model the model that's used to render the view
 	 * @return a reference to a Thymeleaf template fragment
-	 * @see #addEntry(GuestbookForm, Errors, Model)
-	 */
+	 * @see #addEntry(GuestbookForm, Errors, Model)	 */
 	@HxRequest
+	@HxTrigger("eventAdded")
 	@PostMapping(path = "/guestbook")
-	HtmxResponse addEntry(@Valid GuestbookForm form, Model model) {
+	View addEntry(@Valid GuestbookForm form, Model model) {
 
 		model.addAttribute("entry", guestbook.save(form.toNewEntry()));
 		model.addAttribute("index", guestbook.count());
 
-		return new HtmxResponse.Builder()
-				.view("guestbook :: entry")
-				.trigger("eventAdded")
-				.build();
+		return FragmentsRendering.with("guestbook :: entry").build();
 	}
 
 	/**
@@ -166,17 +165,14 @@ class GuestbookController {
 	@HxRequest
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(path = "/guestbook/{entry}")
-	HtmxResponse removeEntryHtmx(@PathVariable Optional<GuestbookEntry> entry, Model model) {
+	View removeEntryHtmx(@PathVariable Optional<GuestbookEntry> entry, Model model) {
 
 		return entry.map(it -> {
 
 			guestbook.delete(it);
 
 			model.addAttribute("entries", guestbook.findAll());
-
-			return new HtmxResponse.Builder()
-					.view("guestbook :: entries")
-					.build();
+			return FragmentsRendering.with("guestbook :: entries").build();
 
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
