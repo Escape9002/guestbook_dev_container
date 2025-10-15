@@ -1,0 +1,27 @@
+{
+  "name": "Java Spring Boot Guestbook",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "Pivotal.vscode-spring-boot",
+        "SonarSource.sonarlint-vscode",
+        "asciidoctor.asciidoctor-vscode",
+        "madhavd1.javadoc-tools"
+      ],
+      "settings": {
+        "java.compile.nullAnalysis.mode": "automatic"
+      }
+    }
+  },
+  "forwardPorts": [
+    8080
+  ],
+  "postCreateCommand": "sudo chown -R vscode:vscode . && dos2unix ./mvnw && chmod +x ./mvnw && ./mvnw clean test",
+  "postStartCommand": "dos2unix ./mvnw && ./mvnw spring-boot:run",
+  "remoteUser": "vscode"
+}
