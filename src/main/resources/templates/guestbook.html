@@ -26,7 +26,7 @@
 					<div class="card-header">
 						<form sec:authorize="hasRole('ADMIN')" th:method="delete" th:action="@{/guestbook/{id}(id=${entry.id})}" th:attr="data-entry-id=${entry.id}">
 							<button th:title="#{guestbook.form.delete}" class="btn btn-sm float-end"
-							        hx:delete="@{/guestbook/{id}(id=${entry.id})}" hx-target="#entries">
+							        th:hx-delete="@{/guestbook/{id}(id=${entry.id})}" hx-target="#entries">
 									<!-- the ':' is necessary, when Thymeleaf expression is used
 									this dialect is enabled by htmx-spring-boot-thymeleaf dependency in pom-->
 								<span class="fas fa-times"></span>
@@ -47,12 +47,12 @@
 		<form method="post" role="form" class="gb-form" id="form" hx-post="/guestbook" hx-target="#entries"
 			  hx-swap="beforeend" _="on entryAdded me.reset()" th:action="@{/guestbook}" th:object="${form}">
 			<div class="form-group">
-				<label for="name" th:text="#{guestbook.form.name}">Name</label><br /> 
+				<label th:for="${#ids.next('name')}" th:text="#{guestbook.form.name}">Name</label><br />
 				<input class="form-control" type="text" th:field="*{name}" th:errorclass="is-invalid" required="required" />
 				<div th:if="${#fields.hasErrors('name')}" class="invalid-feedback" th:text="#{guestbook.form.name.required}">Please provide a name.</div> 
 			</div>
 			<div class="form-group">
-				<label for="text" th:text="#{guestbook.form.text}">Text</label><br /> 
+				<label th:for="${#ids.next('text')}" th:text="#{guestbook.form.text}">Text</label><br />
 				<textarea th:field="*{text}" th:errorclass="is-invalid" class="form-control" required="required"></textarea>
 				<div th:if="${#fields.hasErrors('text')}" class="invalid-feedback" th:text="#{guestbook.form.text.required}">Please provide a text.</div>
 			</div>
