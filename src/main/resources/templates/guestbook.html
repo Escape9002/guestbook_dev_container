@@ -25,7 +25,7 @@
 				<div class="card" th:fragment="entry" th:id="entry+${entry.id}">
 					<div class="card-header">
 						<form sec:authorize="hasRole('ADMIN')" th:method="delete" th:action="@{/guestbook/{id}(id=${entry.id})}" th:attr="data-entry-id=${entry.id}">
-							<button th:title="#{guestbook.form.delete}" class="btn btn-sm float-right"
+							<button th:title="#{guestbook.form.delete}" class="btn btn-sm float-end"
 							        hx:delete="@{/guestbook/{id}(id=${entry.id})}" hx-target="#entries">
 									<!-- the ':' is necessary, when Thymeleaf expression is used
 									this dialect is enabled by htmx-spring-boot-thymeleaf dependency in pom-->
