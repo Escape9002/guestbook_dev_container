@@ -142,7 +142,8 @@ class GuestbookController {
 	 * @param form the form submitted by the user
 	 * @param model the model that's used to render the view
 	 * @return a reference to a Thymeleaf template fragment
-	 * @see #addEntry(GuestbookForm, Errors, Model)	 */
+	 * @see #addEntry(GuestbookForm, Errors, Model)
+	 */
 	@HxRequest
 	@HxTrigger("eventAdded")
 	@PostMapping(path = "/guestbook")
@@ -172,7 +173,8 @@ class GuestbookController {
 			guestbook.delete(it);
 
 			model.addAttribute("entries", guestbook.findAll());
-			return FragmentsRendering.with("guestbook :: entries").build();
+
+			return FragmentsRendering.with("guestbook :: entries").build();
 
 		}).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 	}
