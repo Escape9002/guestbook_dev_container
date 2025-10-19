@@ -15,8 +15,10 @@
  */
 package guestbook;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,6 +26,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -78,6 +84,9 @@ public class Application {
 	@EnableMethodSecurity(prePostEnabled = true)
 	static class SecurityConfiguration implements WebMvcConfigurer {
 
+		@Autowired
+		private UserRepository userRepository;
+
 		/*
 		 * (non-Javadoc)
 		 * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurer#addViewControllers(org.springframework.web.servlet.config.annotation.ViewControllerRegistry)
@@ -100,5 +109,28 @@ public class Application {
 
 			return http.build();
 		}
+
+		@Bean
+		public UserDetailsService userDetailsService() {
+			return username -> {
+				User user = userRepository.findByUsername(username);
+
+				if(user == null){
+					throw new UsernameNotFoundException("User not found");
+				}
+
+				return org.springframework.security.core.userdetails.User.builder()
+					.username(user.getUsername())
+					.password(user.getPassword())
+					.roles(user.getRole())
+					.build();
+			};
+		}
+
+		@Bean
+		public PasswordEncoder passwordEncoder(){
+			return new BCryptPasswordEncoder();
+		}
+
 	}
 }
