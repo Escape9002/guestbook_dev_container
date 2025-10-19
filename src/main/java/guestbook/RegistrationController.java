@@ -18,6 +18,8 @@ import jakarta.validation.Valid;
 @Controller
 public class RegistrationController {
 
+    private static final String REGISTER_HTML ="register";
+
     /**
      * we need access to the existing users, thus wire in the user Repository
      */
@@ -47,7 +49,7 @@ public class RegistrationController {
          * to our java register form.
          */
         model.addAttribute("registrationForm", new RegistrationForm());
-        return "register";
+        return REGISTER_HTML;
     }
 
     /**
@@ -67,7 +69,7 @@ public class RegistrationController {
     @PostMapping("/register")
     public String register(@Valid RegistrationForm form, BindingResult bindResult){
         if(bindResult.hasErrors()){
-            return "register";
+            return REGISTER_HTML;
         }
 
         /**
@@ -75,7 +77,7 @@ public class RegistrationController {
          */
         if(userRepository.findByUsername(form.getUsername()) != null){
             bindResult.rejectValue("username", "error.user", "Username is already taken");
-            return "register";
+            return REGISTER_HTML;
         }
 
         // create new user, with the encoded password, we do NOT want to store the real one.

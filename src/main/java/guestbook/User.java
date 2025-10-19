@@ -3,7 +3,6 @@ package guestbook;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 
 /**
  * We have to define an Object to store in our database. 

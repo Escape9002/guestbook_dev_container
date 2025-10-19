@@ -15,7 +15,6 @@
  */
 package guestbook;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -90,8 +90,9 @@ public class Application {
 		 * this is the dependency injection at work. Spring has a little base container where it stores stuff.
 		 * we can add things to this container by anotating our stuff with the little tags (@component, service, repo, config, etc)
 		 * We can ask for stuff by using these little tags (autowired, Bean, etc.).
-		 * Spring will then search for any existing objects with that name and give us an instance 
-		 * (// QUESTION is it a new instance, or a shared instance?)
+		 * Spring will then search for any existing objects with that name and give us 
+		 * a shared instance (thats why the user repo works! it extends the Crudrepository, which in turn implements 
+		 * the repository interface which is @Indexed and thus stored in the spring "memory")
 		 * 
 		 * This way, we dont need to care about initialization and / or passing around instances in our program.
 		 * Spring simply ensures we get what we ask for.
@@ -144,9 +145,19 @@ public class Application {
 			 * we basicly come along, grab the parameter (username) and hand it off to our implementation.
 			 * This implementes the interface.
 			 * 
-			 * //TODO how to write this without the lambda
+			
 			 */
-			return username -> {
+
+			//// LAMBDA ACTION_<
+			// return username -> { // uncomment this for the lambda action
+			//// >
+			 
+			//// "normal way"_<
+			return new UserDetailsService() {
+				@Override
+				public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
+			//// >
+
 				User user = userRepository.findByUsername(username);
 
 				if(user == null){
@@ -169,7 +180,16 @@ public class Application {
 					.password(user.getPassword())
 					.roles(user.getRole())
 					.build();
+		
+					//// lambda <
+					// }; 
+					//// >
+			
+					//// normal <
+				}
 			};
+
+					//// >
 		}
 
 		/**
