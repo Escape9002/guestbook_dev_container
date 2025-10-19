@@ -84,6 +84,19 @@ public class Application {
 	@EnableMethodSecurity(prePostEnabled = true)
 	static class SecurityConfiguration implements WebMvcConfigurer {
 
+		/**
+		 * https://stackoverflow.com/questions/19414734/understanding-spring-autowired-usage
+		 * 
+		 * this is the dependency injection at work. Spring has a little base container where it stores stuff.
+		 * we can add things to this container by anotating our stuff with the little tags (@component, service, repo, config, etc)
+		 * We can ask for stuff by using these little tags (autowired, Bean, etc.).
+		 * Spring will then search for any existing objects with that name and give us an instance 
+		 * (// QUESTION is it a new instance, or a shared instance?)
+		 * 
+		 * This way, we dont need to care about initialization and / or passing around instances in our program.
+		 * Spring simply ensures we get what we ask for.
+		 * 
+		 */
 		@Autowired
 		private UserRepository userRepository;
 
@@ -110,8 +123,29 @@ public class Application {
 			return http.build();
 		}
 
+		/**
+		 * https://www.baeldung.com/spring-bean
+		 * 
+		 * ! The UserDetailsService is an interface !
+		 * 
+		 * The Bean can be understood as a factory:
+		 * You want a UserDetailsService? Here is how to build one!
+		 * This function is then added to the spring storage and will be used by anything 
+		 * asking for a UserDetailsService.
+		 * 
+		 * 
+		 */
 		@Bean
 		public UserDetailsService userDetailsService() {
+			/**
+			 * this is a lambda. The UserDetailsService has a single function:
+			 * > 	UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+			 * 
+			 * we basicly come along, grab the parameter (username) and hand it off to our implementation.
+			 * This implementes the interface.
+			 * 
+			 * //TODO how to write this without the lambda
+			 */
 			return username -> {
 				User user = userRepository.findByUsername(username);
 
@@ -119,6 +153,17 @@ public class Application {
 					throw new UsernameNotFoundException("User not found");
 				}
 
+				/**
+				 * since we created our own User-class we have to specify the fullpath
+				 * of the springframework-security native User. 
+				 * we should probably use another name for our own user class...
+				 * 
+				 * Why create our own user?
+				 * we need to be able to store our users via the jpa. 
+				 * This is not possible using the spring-security-user.
+				 * The userDetailsService is thus needed, to translate from our storable user
+				 * to a user we can run our authentication with.
+				 */
 				return org.springframework.security.core.userdetails.User.builder()
 					.username(user.getUsername())
 					.password(user.getPassword())
@@ -127,6 +172,10 @@ public class Application {
 			};
 		}
 
+		/**
+		 * creates a password encoder instance, where the encode is used.
+		 * happens via the Bean "replacement" magic
+		 */
 		@Bean
 		public PasswordEncoder passwordEncoder(){
 			return new BCryptPasswordEncoder();

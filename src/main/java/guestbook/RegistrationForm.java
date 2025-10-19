@@ -2,6 +2,10 @@ package guestbook;
 
 import jakarta.validation.constraints.NotEmpty;
 
+/**
+ * The Model(viewController) representation of our html form.
+ * Used to validate and parse html forms from the frontend
+ */
 public class RegistrationForm {
     
     @NotEmpty
