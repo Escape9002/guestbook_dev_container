@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2024 the original author or authors.
+ * Copyright 2015-2025 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ class GuestbookForm {
 	 * bind the values provided in the web form described in {@code src/main/resources/templates/guestbook.html}, in
 	 * particular the {@code name} and {@code text} fields as they correspond to the parameter names of the constructor.
 	 * The constructor needs to be public so that Spring will actually consider it for form data binding until
-	 *  <a href="https://github.com/spring-projects/spring-framework/issues/22600">Issue 22600</a> is resolved.
+	 * <a href="https://github.com/spring-projects/spring-framework/issues/22600">Issue 22600</a> is resolved.
 	 *
 	 * @param name the value to bind to {@code name}
 	 * @param text the value to bind to {@code text}
