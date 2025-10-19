@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" />
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <h1>Registration</h1>
+            <!-- th:action tells thymeleaf that this html will be rendered when calling that url-->
+             <!-- th:object enables the model to add a java/model-representation into this view -->
+            <form th:action="@{/register}" th:object="${registrationForm}" method="post">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <!-- form-control: https://forum.freecodecamp.org/t/class-form-control-what-does-that-do/55479  -->
+                     <!-- th:field defines which name the field has in the model representation -->
+                    <input id="username" class="form-control" th:field="*{username}" />
+                    <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input id="password" type="password" class="form-control" th:field="*{password}" />
+                    <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></p>
+                </div>
+                <div class="form-group">
+                    <!-- type submit ensure that the form is send, when we press this button. -->
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <span>Already registered? <a href="/" th:href="@{/login}">Login here</a></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
