@@ -11,7 +11,8 @@
         "Pivotal.vscode-spring-boot",
         "SonarSource.sonarlint-vscode",
         "asciidoctor.asciidoctor-vscode",
-        "madhavd1.javadoc-tools"
+        "madhavd1.javadoc-tools",
+        "redhat.vscode-xml"
       ],
       "settings": {
         "java.compile.nullAnalysis.mode": "automatic"
